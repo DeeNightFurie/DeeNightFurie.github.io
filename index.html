@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jopana Health Care Work Calculator</title>
+    <style>
+      :root {
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --primary-green: #00a86b;
+        --primary-dark: #008f5b;
+        --text-color: #333333;
+        --text-muted: #666666;
+        --input-bg: #f9f9f9;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        background-color: var(--card-bg);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 950px;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow);
+        gap: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Left Panel (Controls) */
+      .left-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 300px;
+      }
+
+      /* Header Styling */
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 20px; /* Increased gap for larger logo */
+        margin-bottom: 15px;
+      }
+
+      /* LOGO SIZE INCREASED HERE */
+      .logo {
+        width: 100px; /* Increased from 60px */
+        height: auto;
+      }
+
+      .header-text h1 {
+        font-size: 24px;
+        margin: 0;
+        color: var(--primary-green);
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .header-text span {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        font-size: 16px;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+
+      select:focus,
+      input[type="number"]:focus {
+        border-color: var(--primary-green);
+        outline: none;
+      }
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+      }
+
+      .slider-container {
+        position: relative;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 5px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: var(--primary-green);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 168, 107, 0.4);
+      }
+
+      .hour-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .hour-btn {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        background: white;
+        color: var(--text-muted);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .hour-btn.active {
+        background: var(--primary-green);
+        border-color: var(--primary-green);
+        color: white;
+      }
+
+      .hour-btn:hover {
+        border-color: var(--primary-green);
+        color: var(--primary-green);
+      }
+
+      .hour-btn.active:hover {
+        color: white;
+      }
+
+      .warning-text {
+        font-size: 12px;
+        color: #f39c12;
+        display: none;
+      }
+
+      .calculate-btn {
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(0, 168, 107, 0.3);
+      }
+
+      .calculate-btn:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Right Panel (Visual/Result) */
+      .right-panel {
+        flex: 0.9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #f8fbfa;
+        border-radius: 15px;
+        padding: 30px;
+        border: 1px solid #e8f5e9;
+        min-width: 300px;
+      }
+
+      /* NEW: Medical Icon Container */
+      .medical-icon-container {
+        width: 180px;
+        height: 180px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Circular Background */
+      .medical-bg-circle {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #e8f5e9; /* Very light green */
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+
+      /* SVG Icon styling */
+      .medical-svg {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        z-index: 2;
+        fill: none;
+        stroke: var(--primary-green);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        animation: pulse 2s infinite;
+      }
+
+      /* Pulse Animation */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .result-display {
+        display: none;
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .result-amount {
+        font-size: 38px;
+        font-weight: 800;
+        color: var(--primary-green);
+        margin-bottom: 5px;
+      }
+
+      .result-label {
+        font-size: 16px;
+        color: var(--text-muted);
+      }
+
+      /* Footer Quote Styling */
+      .footer-quote {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        font-size: 12px;
+        color: #999;
+        order: 3;
+      }
+
+      /* Layout Helpers */
+      .row-group {
+        display: flex;
+        gap: 15px;
+      }
+      .row-group .form-group {
+        flex: 1;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          padding: 20px;
+        }
+        .right-panel {
+          min-height: 250px;
+        }
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: center;
+          width: 100%;
+        }
+        .logo {
+          margin-bottom: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Left Panel: Controls -->
+      <div class="left-panel">
+        <!-- Header with Logo and Title -->
+        <div class="header">
+          <!-- Logo URL -->
+          <img
+            src="https://z-cdn-media.chatglm.cn/files/405eb61f-deab-42cc-bc91-c58bbb254d50.png?auth_key=1874591317-5652761d27de48ea81b269ca92a5d62a-0-54845687d99e72780465ed555545b748"
+            alt="Jopana Logo"
+            class="logo"
+          />
+          <div class="header-text">
+            <span>EXCELLENCE IN CARE</span>
+            <h1>Jopana Health Care Work Calculator</h1>
+          </div>
+        </div>
+
+        <!-- Row for Dropdowns -->
+        <div class="row-group">
+          <div class="form-group">
+            <label>Profession</label>
+            <select id="professionSelect">
+              <option value="" disabled selected>Select...</option>
+              <option value="nursing">Nursing</option>
+              <option value="physio">Physiotherapist</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Speciality</label>
+            <select id="specialitySelect" disabled>
+              <option value="">Select Profession first</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Hours Per Day (<span id="hoursValue">2</span>h)</label>
+          <div class="slider-container">
+            <input type="range" min="1" max="12" value="2" id="hoursSlider" />
+          </div>
+          <div class="hour-buttons">
+            <button class="hour-btn active" data-hours="2">2h</button>
+            <button class="hour-btn" data-hours="4">4h</button>
+            <button class="hour-btn" data-hours="6">6h</button>
+            <button class="hour-btn" data-hours="8">8h</button>
+          </div>
+          <p class="warning-text" id="warningMsg">
+            💡 Consider increasing your working hours
+          </p>
+        </div>
+
+        <!-- Working Days Input -->
+        <div class="form-group">
+          <label>Working Days (Per Month)</label>
+          <input
+            type="number"
+            id="daysInput"
+            value="25"
+            min="1"
+            max="31"
+            placeholder="Enter days"
+          />
+        </div>
+
+        <button class="calculate-btn" id="calcBtn">Calculate Income</button>
+      </div>
+
+      <!-- Right Panel: Visual & Result -->
+      <div class="right-panel">
+        <!-- NEW: Medical Icon (Heart with Pulse) -->
+        <div class="medical-icon-container" id="medicalViz">
+          <div class="medical-bg-circle"></div>
+          <!-- Inline SVG for Heart with Pulse Line -->
+          <svg class="medical-svg" viewBox="0 0 24 24">
+            <!-- Heart Shape -->
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            ></path>
+            <!-- Pulse Line inside heart (simulated overlay) -->
+            <polyline
+              points="3 12.8 l4.5 0 l1.5 -3.6 l2.4 7.2 l2.1 -4.5 l3 0"
+              transform="translate(2, 3) scale(0.85)"
+            ></polyline>
+          </svg>
+        </div>
+
+        <div class="result-display" id="resultViz">
+          <div class="result-amount">₹<span id="incomeAmount">0</span></div>
+          <div class="result-label">Estimated Monthly Income</div>
+          <p style="font-size: 12px; color: #999; margin-top: 20px">
+            *Based on your inputs
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer Quote -->
+      <div class="footer-quote">Created By Deepish S</div>
+    </div>
+
+    <script>
+      // --- DATA CONFIGURATION ---
+      const pricingData = {
+        nursing: [
+          { name: "General Nursing Care", rate: 300 },
+          { name: "Critical Care", rate: 500 },
+        ],
+        physio: [
+          { name: "Basic Care", rate: 400 },
+          { name: "Advanced Physio care", rate: 600 },
+          { name: "Sports Physio", rate: 800 },
+        ],
+        doctor: [
+          { name: "Online Consultation", rate: 1000 },
+          { name: "At Home Consultation", rate: 1500 },
+        ],
+      };
+
+      // --- DOM ELEMENTS ---
+      const professionSelect = document.getElementById("professionSelect");
+      const specialitySelect = document.getElementById("specialitySelect");
+      const hoursSlider = document.getElementById("hoursSlider");
+      const hoursValue = document.getElementById("hoursValue");
+      const hourBtns = document.querySelectorAll(".hour-btn");
+      const daysInput = document.getElementById("daysInput");
+      const calcBtn = document.getElementById("calcBtn");
+      const warningMsg = document.getElementById("warningMsg");
+
+      // Updated ID for the new graphic
+      const medicalViz = document.getElementById("medicalViz");
+      const resultViz = document.getElementById("resultViz");
+      const incomeAmount = document.getElementById("incomeAmount");
+
+      let currentHours = 2;
+
+      // --- EVENT LISTENERS ---
+
+      // 1. Profession Change -> Update Specialities
+      professionSelect.addEventListener("change", (e) => {
+        const profession = e.target.value;
+        specialitySelect.innerHTML = "";
+
+        if (pricingData[profession]) {
+          specialitySelect.disabled = false;
+          pricingData[profession].forEach((item) => {
+            const option = document.createElement("option");
+            option.value = item.rate;
+            option.textContent = item.name;
+            specialitySelect.appendChild(option);
+          });
+        } else {
+          specialitySelect.disabled = true;
+          const option = document.createElement("option");
+          option.textContent = "Select Profession first";
+          option.value = "";
+          specialitySelect.appendChild(option);
+        }
+
+        resetViz();
+      });
+
+      // 2. Inputs Change -> Reset Viz
+      specialitySelect.addEventListener("change", resetViz);
+      daysInput.addEventListener("input", resetViz);
+
+      // 3. Hours Slider
+      hoursSlider.addEventListener("input", (e) => {
+        currentHours = parseInt(e.target.value);
+        updateUI();
+      });
+
+      // 4. Hour Buttons
+      hourBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentHours = parseInt(btn.dataset.hours);
+          hoursSlider.value = currentHours;
+          updateUI();
+        });
+      });
+
+      // 5. Calculate Button
+      calcBtn.addEventListener("click", () => {
+        if (!professionSelect.value || !specialitySelect.value) {
+          alert("Please select both Profession and Speciality");
+          return;
+        }
+
+        const hourlyRate = parseInt(specialitySelect.value);
+        const workingDays = parseInt(daysInput.value) || 0;
+
+        if (workingDays <= 0) {
+          alert("Please enter a valid number of working days.");
+          return;
+        }
+
+        const monthlyIncome = Math.round(
+          currentHours * hourlyRate * workingDays,
+        );
+
+        // Animate Number
+        let start = 0;
+        const end = monthlyIncome;
+        const duration = 1000;
+        const increment = end / (duration / 16);
+
+        function animateNumber() {
+          start += increment;
+          if (start < end) {
+            incomeAmount.textContent =
+              Math.floor(start).toLocaleString("en-IN");
+            requestAnimationFrame(animateNumber);
+          } else {
+            incomeAmount.textContent = end.toLocaleString("en-IN");
+          }
+        }
+
+        medicalViz.style.display = "none";
+        resultViz.style.display = "block";
+        animateNumber();
+      });
+
+      // --- HELPER FUNCTIONS ---
+
+      function updateUI() {
+        hoursValue.textContent = currentHours;
+
+        hourBtns.forEach((btn) => {
+          btn.classList.remove("active");
+          if (parseInt(btn.dataset.hours) === currentHours) {
+            btn.classList.add("active");
+          }
+        });
+
+        if (currentHours < 4) {
+          warningMsg.style.display = "block";
+        } else {
+          warningMsg.style.display = "none";
+        }
+
+        resetViz();
+      }
+
+      function resetViz() {
+        medicalViz.style.display = "flex"; // Use flex for centering
+        resultViz.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
