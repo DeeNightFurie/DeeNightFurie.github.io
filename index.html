@@ -160,20 +160,20 @@
     <script>
       const pricingData = {
         nursing: [
-          { id: "nursing-visits", name: "Nursing Visits", type: "fixed", hourlyRate: 600, allowedHours: [1], description: "1 hour = ₹600" },
-          { id: "continuous-care-nursing", name: "Continuous Care", type: "slab", slabs: { 6: 1300, 12: 1500, 24: 1800 }, allowedHours: [6, 12, 24], description: "6h = ₹1,300, 12h = ₹1,500, 24h = ₹1,800" },
+          { id: "nursing-visits", name: "Nursing Visits", type: "fixed", hourlyRate: 600, allowedHours: [1]},
+          { id: "continuous-care-nursing", name: "Continuous Care", type: "slab", slabs: { 6: 1300, 12: 1500, 24: 1800 }, allowedHours: [6, 12, 24] },
         ],
         physio: [
-          { id: "basic-care", name: "Basic Care", type: "fixed", hourlyRate: 400, description: "Per hour = ₹400" },
-          { id: "advanced-physio", name: "Advanced Physio care", type: "fixed", hourlyRate: 600, description: "Per hour = ₹600" },
-          { id: "sports-physio", name: "Sports Physio", type: "fixed", hourlyRate: 800, description: "Per hour = ₹800" },
+          { id: "basic-care", name: "Basic Care", type: "fixed", hourlyRate: 400},
+          { id: "advanced-physio", name: "Advanced Physio care", type: "fixed", hourlyRate: 600},
+          { id: "sports-physio", name: "Sports Physio", type: "fixed", hourlyRate: 800},
         ],
         doctor: [
-          { id: "online-consultation", name: "Online Consultation", type: "fixed", hourlyRate: 1000, description: "Per hour = ₹1,000" },
-          { id: "home-consultation", name: "At Home Consultation", type: "fixed", hourlyRate: 1500, description: "Per hour = ₹1,500" },
+          { id: "online-consultation", name: "Online Consultation", type: "fixed", hourlyRate: 1000},
+          { id: "home-consultation", name: "At Home Consultation", type: "fixed", hourlyRate: 1500},
         ],
         gda: [
-          { id: "continuous-care-gda", name: "Continuous Care", type: "slab", slabs: { 6: 600, 12: 800, 24: 801 }, allowedHours: [6, 12, 24], description: "6h = ₹600, 12h = ₹800, 24h = ₹801" },
+          { id: "continuous-care-gda", name: "Continuous Care", type: "slab", slabs: { 6: 600, 12: 800, 24: 800 }, allowedHours: [6, 12, 24] },
         ],
       };
 
